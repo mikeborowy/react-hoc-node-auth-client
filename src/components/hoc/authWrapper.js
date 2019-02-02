@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-export default (ChildComponent) => {
+export default (WrappedComponent) => {
     class ComposedComponent extends Component {
 
         componentDidMount() {
@@ -19,13 +19,21 @@ export default (ChildComponent) => {
         }
 
         render(){
-            return <ChildComponent {...this.props}/>
+            return <WrappedComponent {...this.props}/>
         } 
     };
+
+    ComposedComponent.displayName = getDisplayName(WrappedComponent)
 
     const mapStateToProps = (state) => ({
         auth: state.auth.authenticated
     }) ;    
 
-    return connect(mapStateToProps)(ComposedComponent);
+    return connect(
+        mapStateToProps
+    )(ComposedComponent);
 }
+
+function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  }
